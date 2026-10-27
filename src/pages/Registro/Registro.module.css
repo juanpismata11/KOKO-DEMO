@@ -1,0 +1,411 @@
+/* ── coconut ───────────────────────────────────────────────
+   Near-black for ink and the primary button, husk brown for
+   the logo, a warm gold for focus rings — the same family the
+   rest of the app uses, just under its own names since this
+   module owns them independently. */
+:root {
+  --voy-green-logo: #4a4a4a;
+  --voy-green-button: #1a1a1a;
+  --voy-green-button-hover: #000000;
+  --voy-ring: rgba(140, 140, 140, 0.5);
+  --voy-field-bg: #efefef;
+  --voy-field-bg-hover: #e3e3e3;
+  --voy-ink: #1a1a1a;
+  --voy-placeholder: #8a8a8a;
+  --voy-line: #dcdcdc;
+  --voy-error: #b3451d;
+
+  --voy-radius-pill: 999px;
+  --voy-radius-panel: 32px;
+
+  --voy-grad-top: #0d0d0d;
+  --voy-grad-mid: #3a3a3a;
+  --voy-grad-bottom: #9a9a9a;
+
+  --voy-font: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.page,
+.page * {
+  box-sizing: border-box;
+}
+
+.page {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #fffbf5;
+  font-family: var(--voy-font);
+  color: var(--voy-ink);
+}
+
+/* ── the form panel: always 40% wide, only its SIDE changes.
+   Register puts it at the left edge, login slides it to the
+   right — the block panel below mirrors it so the two always
+   swap places together. */
+.formPanel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  overflow-y: auto;
+  transition: left 550ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.formSlotLeft {
+  left: 0;
+}
+
+.formSlotRight {
+  left: 60%;
+}
+
+/* Anchored to .page directly, not to either sliding panel —
+   it never moves, no matter which side the form is on. */
+.backButton {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 20;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: var(--voy-field-bg);
+  color: var(--voy-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.backButton:hover {
+  background: var(--voy-field-bg-hover);
+}
+
+.backButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--voy-ring);
+}
+
+/* The outgoing form drops and fades; the incoming one is a
+   freshly-mounted element (keyed by mode), so it always plays
+   its entrance on its own — no leaving state needed for it. */
+@keyframes formEnter {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes formLeave {
+  to {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.column {
+  width: 100%;
+  max-width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* held invisible (both = holds the 0% state through the
+     delay) until well after the panel/block slide (550ms)
+     has settled, so it never fades in mid-transition */
+  animation: formEnter 320ms ease 0.5s both;
+}
+
+.columnLeaving {
+  animation: formLeave 280ms ease both;
+}
+
+/* first paint only — already in place, nothing to fade in */
+.columnNoAnim {
+  animation: none;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--voy-green-logo);
+  letter-spacing: 0.02em;
+}
+
+.title {
+  margin: 10px 0 20px;
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--voy-ink);
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field {
+  width: 100%;
+  text-align: left;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--voy-radius-pill);
+  background: var(--voy-field-bg);
+  color: var(--voy-ink);
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow 150ms ease, background-color 150ms ease;
+}
+
+.input::placeholder {
+  color: var(--voy-placeholder);
+  font-size: 13px;
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2px var(--voy-ring);
+}
+
+.input[aria-invalid="true"] {
+  box-shadow: 0 0 0 2px var(--voy-error);
+}
+
+.passwordWrap {
+  position: relative;
+  width: 100%;
+}
+
+.passwordWrap .input {
+  padding-right: 46px;
+}
+
+.eyeButton {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--voy-placeholder);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.eyeButton:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--voy-ink);
+}
+
+.eyeButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--voy-ring);
+}
+
+.error {
+  margin: 6px 2px 0;
+  font-size: 12px;
+  color: var(--voy-error);
+}
+
+.submit {
+  width: 100%;
+  height: 48px;
+  margin-top: 6px;
+  border: none;
+  border-radius: var(--voy-radius-pill);
+  background: var(--voy-green-button);
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 100ms ease;
+}
+
+.submit:hover {
+  background: var(--voy-green-button-hover);
+}
+
+.submit:active {
+  transform: scale(0.98);
+}
+
+.submit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--voy-ring);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 16px 0 12px;
+  color: var(--voy-placeholder);
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--voy-line);
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.socialButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--voy-field-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--voy-ink);
+  transition: background-color 150ms ease;
+}
+
+.socialButton:hover {
+  background: var(--voy-field-bg-hover);
+}
+
+.socialButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--voy-ring);
+}
+
+.loginLink {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--voy-placeholder);
+}
+
+.loginLinkStrong {
+  font-weight: 700;
+  color: var(--voy-ink);
+  text-decoration: none;
+}
+
+.loginLinkStrong:hover {
+  text-decoration: underline;
+}
+
+.loginLinkStrong:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--voy-ring);
+  border-radius: 4px;
+}
+
+/* ── the gradient block: fixed 12px inset from the window's
+   outer edge and the top/bottom, flush against the form on
+   its inner edge. Only `left`/`right` move — never `width` —
+   so sliding never pinches or stretches the panel: whichever
+   one shrinks, the other grows by exactly the same amount. */
+.blockPanel {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  border-radius: var(--voy-radius-panel);
+  overflow: hidden;
+  background: linear-gradient(
+    160deg,
+    var(--voy-grad-top) 0%,
+    var(--voy-grad-mid) 55%,
+    var(--voy-grad-bottom) 100%
+  );
+  transition: left 550ms cubic-bezier(0.65, 0, 0.35, 1),
+    right 550ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.blockSlotRight {
+  left: 40%;
+  right: 12px;
+}
+
+.blockSlotLeft {
+  left: 12px;
+  right: 40%;
+}
+
+.rightGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 85% 8%,
+    rgba(255, 255, 255, 0.2),
+    transparent 45%
+  );
+  pointer-events: none;
+}
+
+/* ── responsive ─────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .blockPanel {
+    display: none;
+  }
+
+  .formPanel {
+    position: static;
+    width: 100%;
+    height: 100%;
+  }
+
+  .column {
+    max-width: 360px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

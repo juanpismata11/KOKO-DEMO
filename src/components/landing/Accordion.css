@@ -1,0 +1,80 @@
+/* ══ Image accordion ════════════════════════════════════════
+   Not part of the pasted source — no stylesheet came with it,
+   so this is authored from what the component's own comments
+   describe: a fixed-width flex row, five grow numbers doing
+   the arithmetic, a cover-cropped image per cell, and nothing
+   drawn on top of the picture. No transitions on flex-grow or
+   border-radius here — both are sprung or set per-frame by the
+   component, and a CSS transition riding along would fight it
+   the same way it would on Seek's width or the carousel's ring. */
+.acc {
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+  /* the strip clips at a sub-pixel fraction of a flex width
+     sooner than it notches between two square-ish corners —
+     see the note on RMAX in Accordion.tsx */
+}
+
+.acc-cell {
+  position: relative;
+  flex-basis: 0;
+  /* a flex item will not shrink below its own content by
+     default, and the content here is an image — without this
+     the strip stops negotiating and the cells past a few just
+     refuse to go any narrower */
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.acc-cell img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── responsive wrapper ────────────────────────────────────
+   Same idea as .car-wrap in Carousel.css: the strip is a fixed
+   340x300 by design (a block that resized with its container
+   would be a different shape in every place it's used), so it
+   scales visually with a transform instead — smaller on a
+   narrow phone, bigger alongside the MLS section's full-height
+   layout on desktop. */
+.acc-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* The scale lands on .acc itself — the fixed 340x300 box —
+   never on .acc-wrap. .acc-wrap is width: 100%, i.e. the whole
+   grid column; scaling THAT scaled the column, not the strip,
+   and a 500px-wide column at 2.25x reached past the viewport
+   and put a horizontal scrollbar under the entire page. */
+@media (max-width: 420px) {
+  .acc {
+    /* scaleX a touch past scaleY even here, so it reaches
+       a little wider than it does taller at every size */
+    transform: scale(1.05, 0.85);
+    margin: -22px 0;
+  }
+}
+
+@media (min-width: 421px) and (max-width: 1023px) {
+  .acc {
+    transform: scale(1.3, 1);
+  }
+}
+
+@media (min-width: 1024px) {
+  .acc {
+    transform: scale(2.25, 1.75);
+    margin: 112px 0;
+  }
+}

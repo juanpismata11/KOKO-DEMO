@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ── coconut ───────────────────────────────────────────────
+   frame:  the pale ivory of the flesh, the canvas everything
+           else sits on.
+   navy:   the near-black ink — still the app's "ink"
+           colour, just warm instead of cold.
+   gold:   the husk caught in the light. The one accent that
+           is neither black nor gray, used sparingly — focus rings,
+           shine, the odd highlight. */
+@theme {
+  --color-frame: #f6eee1;
+  --color-navy: #1a1a1a;
+  --color-gold: #8c8c8c;
+
+  --font-sans: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* hero entrance: the box settles in from a soft blur, the
+     photo inside slowly eases back from a zoom, and the copy
+     rises in after it, staggered with animation-delay. */
+  --animate-hero-in: hero-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-hero-zoom: hero-zoom 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-hero-rise: hero-rise 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+      filter: blur(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+
+  @keyframes hero-zoom {
+    from {
+      transform: scale(1.15);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  /* a safety net, not a fix: a transform-scaled block (the
+     carousel, the accordion) can paint past its own box, and
+     without this that paint reaches the document and adds a
+     sideways scrollbar to the whole page. Everything that can
+     cause that has its own fix too — this just means a future
+     one fails quietly instead of stretching the page. */
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--color-frame);
+  color: var(--color-navy);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
